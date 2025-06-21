@@ -21,7 +21,7 @@ def execute_sql_file(filename):
             user='root',
             password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
             port=55321,
-            database='donnee_app'
+            database='railway'
         )
         
         if connection.is_connected():

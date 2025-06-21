@@ -13,7 +13,7 @@ from db_config import get_db_connection
 # Configuration de la base de données
 db_config = {
     'host': 'switchback.proxy.rlwy.net',
-    'database': 'donnee_app',
+    'database': 'railway',
     'user': 'root',
     'password': 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
     'port': 55321,

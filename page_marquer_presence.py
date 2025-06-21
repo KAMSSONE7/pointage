@@ -22,7 +22,7 @@ def get_db_connection():
     try:
         connection = mysql.connector.connect(
             host='switchback.proxy.rlwy.net',
-            database='donnee_app',
+            database='railway',
             user='root',
             password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',  # Mot de passe vide
             port=55321,

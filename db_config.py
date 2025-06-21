@@ -16,7 +16,7 @@ DB_CONFIG = {
     'port': int(os.environ.get("DB_PORT", 3306)),
     'user': os.environ.get("DB_USER", "root"),
     'password': os.environ.get("DB_PASSWORD", ""),
-    'database': os.environ.get("DB_NAME", "donnee_app"),
+    'database': os.environ.get("DB_NAME", "railway"),
     'autocommit': True,
     'pool_size': 5,
     'connect_timeout': 10,

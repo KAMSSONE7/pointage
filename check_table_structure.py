@@ -19,7 +19,7 @@ def check_etudiant_table():
         cursor.execute("""
             SELECT COLUMN_NAME 
             FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE TABLE_SCHEMA = 'donnee_app' 
+            WHERE TABLE_SCHEMA = 'railway' 
             AND TABLE_NAME = 'etudiant' 
             AND COLUMN_NAME = 'IP';
         """)

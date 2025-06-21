@@ -4,9 +4,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 SET @old_autocommit=@@autocommit;
 
-DROP SCHEMA IF EXISTS donnee_app;
-CREATE SCHEMA donnee_app;
-USE donnee_app;
+DROP SCHEMA IF EXISTS railway;
+CREATE SCHEMA railway;
+USE railway;
 
 -- structure de la table Salle
 CREATE TABLE Salle (

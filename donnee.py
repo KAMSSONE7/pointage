@@ -6,7 +6,7 @@ try:
     # Connexion à la base de données
     connection = mysql.connector.connect(
         host='switchback.proxy.rlwy.net',  # adresse de serveur MySQL
-        database='donnee_app',  # base de données à utiliser
+        database='railway',  # base de données à utiliser
         user='root',  # nom d'utilisateur MySQL
         password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',  # mot de passe MySQL
         port=55321,

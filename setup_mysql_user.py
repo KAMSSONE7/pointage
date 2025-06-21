@@ -16,7 +16,7 @@ def setup_database_user():
             cursor = connection.cursor()
             
             # Paramètres du nouvel utilisateur
-            db_name = 'donnee_app'
+            db_name = 'railway'
             db_user = 'app_user'
             db_password = 'MonMotDePasseSecurise123!'  # À changer en production !
             
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     print("=== Configuration de l'utilisateur MySQL ===\n")
     print("Ce script va :")
     print("1. Créer un nouvel utilisateur 'app_user'")
-    print("2. Créer la base de données 'donnee_app' si elle n'existe pas")
+    print("2. Créer la base de données 'railway' si elle n'existe pas")
     print("3. Accorder tous les privilèges sur cette base au nouvel utilisateur\n")
     
     confirm = input("Voulez-vous continuer ? (o/n): ")

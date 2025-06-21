@@ -5,7 +5,7 @@ def test_connection():
     try:
         conn = mysql.connector.connect(
             host="switchback.proxy.rlwy.net",
-            database="donnee_app",
+            database="railway",
             user="root",
             password="IowFRbmQYlvxWwLrMLalevEQqhQtWvYN",
             port=55321

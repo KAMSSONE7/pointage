@@ -13,7 +13,7 @@ def check_database():
     """Vérifie la connexion à la base de données et le contenu des tables."""
     config = {
         'host': '127.0.0.1',
-        'database': 'donnee_app',
+        'database': 'railway',
         'user': 'root',
         'password': '',
         'port': 55321,
@@ -36,11 +36,11 @@ def check_database():
             for db in databases:
                 print(f"- {db['Database']}")
             
-            # Vérifier les tables dans donnee_app
-            cursor.execute("USE donnee_app")
+            # Vérifier les tables dans railway
+            cursor.execute("USE railway")
             cursor.execute("SHOW TABLES")
             tables = cursor.fetchall()
-            print("\nTables dans donnee_app:")
+            print("\nTables dans railway:")
             for table in tables:
                 table_name = table[f'Tables_in_{config["database"]}']
                 print(f"\nTable: {table_name}")

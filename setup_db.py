@@ -14,7 +14,7 @@ def main():
         cursor = conn.cursor()
         
         # Paramètres
-        db_name = 'donnee_app'
+        db_name = 'railway'
         db_user = 'app_user'
         db_password = 'MonMotDePasseSecurise123!'  # À changer en production
         

@@ -1,5 +1,5 @@
 -- Ajout de la table Notifications pour gérer les notifications des utilisateurs
-USE donnee_app;
+USE railway;
 
 CREATE TABLE IF NOT EXISTS Notifications (
     Id_notification INT PRIMARY KEY AUTO_INCREMENT,
