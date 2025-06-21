@@ -16,7 +16,11 @@ DB_CONFIG = {
     'port': int(os.getenv('DB_PORT', 55321)),  # Convertit en entier
     'charset': 'utf8mb4',
     'autocommit': True,
-    'connection_timeout': 10
+    'connection_timeout': 10,
+    "pool_name": "mypool",
+    "pool_size": 10,  # Limite le nombre de connexions
+    "pool_reset_session": True
+
 }
 
 def get_db_connection():
