@@ -21,7 +21,8 @@ DB_CONFIG = {
     'pool_size': 5,
     'connect_timeout': 10,
     'raise_on_warnings': True,
-    'ssl_ca': '/path/to/ca-cert.pem',  # Ajoute si SSL requis
+    # Paramètres SSL (à décommenter et ajuster)
+    'ssl_ca': os.getenv('SSL_CA', '/path/to/railway-ca.pem'),  # Chemin vers le certificat CA
     'ssl_verify_cert': True
 }
 
