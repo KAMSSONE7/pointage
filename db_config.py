@@ -9,18 +9,14 @@ logger = logging.getLogger(__name__)
 
 
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'switchback.proxy.rlwy.net'),  # Fallback option
-    'database': os.getenv('DB_NAME', 'donnee_app'),
-    'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASSWORD', 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN'),
-    'port': int(os.getenv('DB_PORT', 55321)),  # Convertit en entier
-    'charset': 'utf8mb4',
-    'autocommit': True,
-    'connection_timeout': 10,
-    "pool_name": "mypool",
-    "pool_size": 10,  # Limite le nombre de connexions
-    "pool_reset_session": True
-
+    'host': 'switchback.proxy.rlwy.net',  # Hostname confirmé
+    'port': 55321,                        # Port ouvert
+    'user': 'root',                       # Utilisateur Railway
+    'password': 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
+    'database': 'donnee_app',             # Nom de votre base
+    'autocommit': True,                   # Essential pour les écritures
+    'connect_timeout': 5,                 # Timeout réduit pour debug
+    'pool_size': 3                        # Gestion des connexions
 }
 
 def get_db_connection():

@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 from page_connexion import *
 from page_inscription import *
 from page_recup_mot_passe import *

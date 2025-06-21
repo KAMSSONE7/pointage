@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 import asyncio
 
 def page_transition(page: ft.Page):

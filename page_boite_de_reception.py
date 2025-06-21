@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 from flet import *
 import mysql.connector
 from mysql.connector import Error

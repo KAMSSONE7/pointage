@@ -1,4 +1,5 @@
-import flet as ft 
+import flet as ft
+from db_config import DB_CONFIG 
 
 def page_bienvenue(page:ft.Page):
     # Nettoyer la session et les vues au chargement de la page de connexion

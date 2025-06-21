@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 from flet import *
 from fonction import *
 from datetime import datetime

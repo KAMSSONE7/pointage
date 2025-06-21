@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 
 def page_etu_acc(page: ft.Page):
     # Palette de couleurs moderne pour étudiant

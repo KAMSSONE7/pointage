@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart

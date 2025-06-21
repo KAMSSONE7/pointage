@@ -1,4 +1,5 @@
 import flet as ft
+from db_config import DB_CONFIG
 
 BG = "#041955"  # Bleu foncé
 FWG = "#FFFFFF"  # Blanc
