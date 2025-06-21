@@ -1,54 +1,80 @@
 """
-Configuration centralisée pour la base de données.
+Configuration centralisée et optimisée pour la base de données avec gestion de pool de connexions.
 """
 import logging
+import mysql.connector
+from mysql.connector import Error, errorcode, pooling
 import os
 
-# Configuration du logging
+# Configuration avancée du logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+# Configuration de la base de données
 DB_CONFIG = {
-    'host': 'switchback.proxy.rlwy.net',  # Hostname confirmé
-    'port': 55321,                        # Port ouvert
-    'user': 'root',                       # Utilisateur Railway
-    'password': 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
-    'database': 'donnee_app',             # Nom de votre base
-    'autocommit': True,                   # Essential pour les écritures
-    'connect_timeout': 5,                 # Timeout réduit pour debug
-    'pool_size': 3                        # Gestion des connexions
+    'host': os.getenv('DB_HOST', 'switchback.proxy.rlwy.net'),
+    'port': int(os.getenv('DB_PORT', '55321')),
+    'user': os.getenv('DB_USER', 'root'),
+    'password': os.getenv('DB_PASSWORD', 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN'),
+    'database': os.getenv('DB_NAME', 'donnee_app'),
+    'autocommit': True,
+    'connect_timeout': 5,
+    'pool_name': 'mypool',
+    'pool_size': 5,  # Taille optimale pour Render
+    'pool_reset_session': True
 }
+
+# Initialisation du pool de connexions
+try:
+    connection_pool = pooling.MySQLConnectionPool(**DB_CONFIG)
+    logger.info("Pool de connexions MySQL initialisé avec succès")
+except Error as err:
+    logger.error(f"Erreur lors de l'initialisation du pool: {err}")
+    connection_pool = None
 
 def get_db_connection():
     """
-    Crée et retourne une nouvelle connexion à la base de données.
+    Obtient une connexion depuis le pool.
+    Gère automatiquement les erreurs et les reconnexions.
     """
-    import mysql.connector
-    from mysql.connector import Error, errorcode
-    
-    logger.info("Tentative de connexion à la base de données...")
-    logger.debug(f"Paramètres de connexion: host={DB_CONFIG['host']}, port={DB_CONFIG['port']}, database={DB_CONFIG['database']}")
-    
+    if not connection_pool:
+        logger.error("Pool de connexions non initialisé")
+        return None
+
     try:
-        connection = mysql.connector.connect(**DB_CONFIG)
+        connection = connection_pool.get_connection()
         if connection.is_connected():
-            db_info = connection.get_server_info()
-            logger.info(f"Connecté à MySQL Server version {db_info}")
+            logger.debug("Connexion obtenue depuis le pool")
             return connection
-        else:
-            logger.error("La connexion à la base de données a échoué")
-            return None
-            
     except Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            logger.error("Erreur d'authentification: Vérifiez le nom d'utilisateur et le mot de passe")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            logger.error(f"La base de données {DB_CONFIG['database']} n'existe pas")
-        elif isinstance(err, mysql.connector.errors.InterfaceError):
-            logger.error(f"Impossible de se connecter au serveur MySQL sur {DB_CONFIG['host']}:{DB_CONFIG['port']}")
-        else:
-            logger.error(f"Erreur de connexion à la base de données: {err}")
+        logger.error(f"Erreur lors de l'obtention de la connexion: {err}")
         return None
+
+def close_db_resources(cursor=None, connection=None):
+    """
+    Ferme proprement les ressources de base de données.
+    """
+    try:
+        if cursor:
+            cursor.close()
     except Exception as e:
-        logger.error(f"Erreur inattendue lors de la connexion: {str(e)}")
-        return None
+        logger.warning(f"Erreur lors de la fermeture du curseur: {e}")
+
+    try:
+        if connection and connection.is_connected():
+            connection.close()
+            logger.debug("Connexion libérée dans le pool")
+    except Exception as e:
+        logger.warning(f"Erreur lors de la fermeture de la connexion: {e}")
+
+# Test de connexion au démarrage
+if __name__ == "__main__":
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT DATABASE()")
+            db_name = cursor.fetchone()[0]
+            logger.info(f"Connecté avec succès à la base: {db_name}")
+        finally:
+            close_db_resources(cursor, conn)
