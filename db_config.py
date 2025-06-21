@@ -10,18 +10,19 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuration de la base de données
-# db_config.py
+# Configuration de la base de données avec variables d'environnement de Render
 DB_CONFIG = {
-    'host': 'switchback.proxy.rlwy.net',
-    'port': 55321,
-    'user': 'root',
-    'password': 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
-    'database': 'railway',  # ⚠️ Doit être identique à Workbench
+    'host': os.getenv('DB_HOST', 'yamanote.proxy.rlwy.net'),
+    'port': int(os.getenv('DB_PORT', 13208)),
+    'user': os.getenv('DB_USER', 'root'),
+    'password': os.getenv('DB_PASSWORD', 'oAEycvrWsPdjBfkQnEhqbSLoggHAadRt'),
+    'database': os.getenv('DB_NAME', 'railway'),
     'autocommit': True,
     'pool_size': 5,
     'connect_timeout': 10,
-    'raise_on_warnings': True  # Nouveau: pour détecter les problèmes
+    'raise_on_warnings': True,
+    'ssl_ca': '/path/to/ca-cert.pem',  # Ajoute si SSL requis
+    'ssl_verify_cert': True
 }
 
 # Initialisation du pool de connexions
@@ -33,14 +34,9 @@ except Error as err:
     connection_pool = None
 
 def get_db_connection():
-    """
-    Obtient une connexion depuis le pool.
-    Gère automatiquement les erreurs et les reconnexions.
-    """
     if not connection_pool:
         logger.error("Pool de connexions non initialisé")
         return None
-
     try:
         connection = connection_pool.get_connection()
         if connection.is_connected():
@@ -51,15 +47,11 @@ def get_db_connection():
         return None
 
 def close_db_resources(cursor=None, connection=None):
-    """
-    Ferme proprement les ressources de base de données.
-    """
     try:
         if cursor:
             cursor.close()
     except Exception as e:
         logger.warning(f"Erreur lors de la fermeture du curseur: {e}")
-
     try:
         if connection and connection.is_connected():
             connection.close()
@@ -67,7 +59,6 @@ def close_db_resources(cursor=None, connection=None):
     except Exception as e:
         logger.warning(f"Erreur lors de la fermeture de la connexion: {e}")
 
-# Test de connexion au démarrage
 if __name__ == "__main__":
     conn = get_db_connection()
     if conn:

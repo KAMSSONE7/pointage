@@ -5,11 +5,11 @@ from datetime import datetime
 try:
     # Connexion à la base de données
     connection = mysql.connector.connect(
-        host='switchback.proxy.rlwy.net',  # adresse de serveur MySQL
+        host='yamanote.proxy.rlwy.net',  # adresse de serveur MySQL
         database='railway',  # base de données à utiliser
         user='root',  # nom d'utilisateur MySQL
-        password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',  # mot de passe MySQL
-        port=55321,  # port MySQL
+        password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # mot de passe MySQL
+        port=13208,  # port MySQL
         charset='utf8mb4'
     )
     

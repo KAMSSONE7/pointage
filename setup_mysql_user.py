@@ -6,9 +6,9 @@ def setup_database_user():
         # Connexion en tant que root (sans mot de passe dans ce cas)
         connection = mysql.connector.connect(
             host='127.0.0.1',
-            port=55321,
+            port=13208,
             user='root',
-            password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
+            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
             auth_plugin='mysql_native_password'
         )
         
@@ -23,17 +23,17 @@ def setup_database_user():
             print("Création de l'utilisateur et configuration des privilèges...")
             
             # Création de l'utilisateur s'il n'existe pas
-            cursor.execute(f"CREATE USER IF NOT EXISTS '{db_user}'@'switchback.proxy.rlwy.net' IDENTIFIED BY '{db_password}'")
+            cursor.execute(f"CREATE USER IF NOT EXISTS '{db_user}'@'yamanote.proxy.rlwy.net' IDENTIFIED BY '{db_password}'")
             
             # Création de la base de données si elle n'existe pas
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
             
             # Attribution des privilèges
-            cursor.execute(f"GRANT ALL PRIVILEGES ON {db_name}.* TO '{db_user}'@'switchback.proxy.rlwy.net'")
+            cursor.execute(f"GRANT ALL PRIVILEGES ON {db_name}.* TO '{db_user}'@'yamanote.proxy.rlwy.net'")
             cursor.execute("FLUSH PRIVILEGES")
             
             # Vérification
-            cursor.execute(f"SHOW GRANTS FOR '{db_user}'@'switchback.proxy.rlwy.net'")
+            cursor.execute(f"SHOW GRANTS FOR '{db_user}'@'yamanote.proxy.rlwy.net'")
             print("\nPrivilèges accordés :")
             for priv in cursor:
                 print(f"- {priv[0]}")

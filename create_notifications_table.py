@@ -19,8 +19,8 @@ def execute_sql_file(filename):
         connection = mysql.connector.connect(
             host='127.0.0.1',
             user='root',
-            password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
-            port=55321,
+            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
+            port=13208,
             database='railway'
         )
         

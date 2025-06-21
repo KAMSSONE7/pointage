@@ -193,11 +193,11 @@ def stat_etu_admin():
     try:
         # Connexion à la base de données
         connection = mysql.connector.connect(
-            host='switchback.proxy.rlwy.net',  # adresse de serveur MySQL
+            host='yamanote.proxy.rlwy.net',  # adresse de serveur MySQL
             database='railway',  # base de données utiliser
             user='root',  # nom d'utilisateur MySQL
-            port='55321',
-            password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',  # Remplacez par votre mot de passe MySQL
+            port='13208',
+            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # Remplacez par votre mot de passe MySQL
             charset='utf8'
         )
         

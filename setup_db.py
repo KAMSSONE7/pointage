@@ -5,9 +5,9 @@ def main():
         # Connexion en tant que root
         conn = mysql.connector.connect(
             host='127.0.0.1',
-            port=55321,
+            port=13208,
             user='root',
-            password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
+            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
             auth_plugin='mysql_native_password'
         )
         
@@ -19,13 +19,13 @@ def main():
         db_password = 'MonMotDePasseSecurise123!'  # À changer en production
         
         # Création utilisateur
-        cursor.execute(f"CREATE USER IF NOT EXISTS '{db_user}'@'switchback.proxy.rlwy.net' IDENTIFIED BY '{db_password}'")
+        cursor.execute(f"CREATE USER IF NOT EXISTS '{db_user}'@'yamanote.proxy.rlwy.net' IDENTIFIED BY '{db_password}'")
         
         # Création base de données
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
         
         # Attribution des droits
-        cursor.execute(f"GRANT ALL PRIVILEGES ON {db_name}.* TO '{db_user}'@'switchback.proxy.rlwy.net'")
+        cursor.execute(f"GRANT ALL PRIVILEGES ON {db_name}.* TO '{db_user}'@'yamanote.proxy.rlwy.net'")
         cursor.execute("FLUSH PRIVILEGES")
         
         print("✅ Configuration réussie!")

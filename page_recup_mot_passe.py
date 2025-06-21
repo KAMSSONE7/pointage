@@ -12,11 +12,11 @@ from db_config import get_db_connection
 
 # Configuration de la base de données
 db_config = {
-    'host': 'switchback.proxy.rlwy.net',
+    'host': 'yamanote.proxy.rlwy.net',
     'database': 'railway',
     'user': 'root',
-    'password': 'IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',
-    'port': 55321,
+    'password': 'oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
+    'port': 13208,
     'charset': 'utf8mb4'
 }
 

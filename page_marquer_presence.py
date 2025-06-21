@@ -21,11 +21,11 @@ def get_db_connection():
     """Établit une connexion à la base de données MySQL"""
     try:
         connection = mysql.connector.connect(
-            host='switchback.proxy.rlwy.net',
+            host='yamanote.proxy.rlwy.net',
             database='railway',
             user='root',
-            password='IowFRbmQYlvxWwLrMLalevEQqhQtWvYN',  # Mot de passe vide
-            port=55321,
+            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # Mot de passe vide
+            port=13208,
             connection_timeout=5
         )
         if connection.is_connected():

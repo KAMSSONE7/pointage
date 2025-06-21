@@ -16,7 +16,7 @@ def check_database():
         'database': 'railway',
         'user': 'root',
         'password': '',
-        'port': 55321,
+        'port': 13208,
         'charset': 'utf8mb4',
         'autocommit': True,
         'auth_plugin': 'mysql_native_password'
