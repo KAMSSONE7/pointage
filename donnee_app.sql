@@ -127,7 +127,7 @@ COMMIT;
 -- insertion des groupes de TD
 SET AUTOCOMMIT=0;
 INSERT INTO Groupe_td (Libelle) VALUES
-('G1'),('G2'),('G3'),('G4'),('SI'),('Mecanique');
+('G1'),('G2'),('G3'),('G4'),('G5'), ('SI'),('Mecanique');
 COMMIT;
 
 -- insertion des cours
