@@ -22,8 +22,8 @@ DB_CONFIG = {
     'connect_timeout': 10,
     'raise_on_warnings': True,
     # Paramètres SSL (à décommenter et ajuster)
-    'ssl_ca': os.getenv('SSL_CA', '/path/to/railway-ca.pem'),  # Chemin vers le certificat CA
-    'ssl_verify_cert': True
+    #'ssl_ca': os.getenv('SSL_CA', '/path/to/railway-ca.pem'),  # Chemin vers le certificat CA
+    #'ssl_verify_cert': True
 }
 
 # Initialisation du pool de connexions
