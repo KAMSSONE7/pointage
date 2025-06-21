@@ -324,7 +324,7 @@ def page_inscription (page: ft.Page):
         label="Niveau d'études",
         hint_text="Sélectionnez votre niveau",
         options=[ft.dropdown.Option(f"Licence {i}") for i in range(1, 4)] + 
-                [ft.dropdown.Option(f"Master {i}") for i in range(1, 14)],
+                [ft.dropdown.Option(f"Master {i}") for i in range(1, 3)],
         visible=False,
         **dropdown_style
     )
@@ -332,7 +332,7 @@ def page_inscription (page: ft.Page):
     groupe_td = ft.Dropdown(
         label="Groupe de TD",
         hint_text="Sélectionnez votre groupe",
-        options=[ft.dropdown.Option(str(i)) for i in range(1, 5)] + 
+        options=[ft.dropdown.Option(str(i)) for i in range(1, 14)] + 
                 [ft.dropdown.Option("SI"), ft.dropdown.Option("Mecanique")],
         visible=False,
         **dropdown_style
