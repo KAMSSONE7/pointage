@@ -323,7 +323,7 @@ def page_inscription (page: ft.Page):
     niveau = ft.Dropdown(
         label="Niveau d'études",
         hint_text="Sélectionnez votre niveau",
-        options=[ft.dropdown.Option(f"Licence {i}") for i in range(1, 4)] + 
+        options=[ft.dropdown.Option(f"Licence {i}") for i in range(1, 14)] + 
                 [ft.dropdown.Option(f"Master {i}") for i in range(1, 3)],
         visible=False,
         **dropdown_style
