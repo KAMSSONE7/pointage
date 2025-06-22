@@ -1,16 +1,11 @@
-"""
-Configuration centralisée et optimisée pour la base de données avec gestion de pool de connexions.
-"""
 import logging
 import mysql.connector
 from mysql.connector import Error, errorcode, pooling
 import os
 
-# Configuration avancée du logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Configuration de la base de données avec variables d'environnement de Render
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'yamanote.proxy.rlwy.net'),
     'port': int(os.getenv('DB_PORT', 13208)),
@@ -19,14 +14,12 @@ DB_CONFIG = {
     'database': os.getenv('DB_NAME', 'railway'),
     'autocommit': True,
     'pool_size': 5,
-    'connect_timeout': 10,
+    'connect_timeout': 30,
     'raise_on_warnings': True,
-    # Paramètres SSL (à décommenter et ajuster)
-    #'ssl_ca': os.getenv('SSL_CA', '/path/to/railway-ca.pem'),  # Chemin vers le certificat CA
-    #'ssl_verify_cert': True
+    'ssl_ca': os.getenv('SSL_CA', None),  # Ajuster si certificat disponible
+    'ssl_verify_cert': False  # Désactiver temporairement
 }
 
-# Initialisation du pool de connexions
 try:
     connection_pool = pooling.MySQLConnectionPool(**DB_CONFIG)
     logger.info("Pool de connexions MySQL initialisé avec succès")
