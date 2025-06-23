@@ -50,6 +50,8 @@ def page(page: ft.Page):
             page.views.append(ft.View(route="/page_transition",controls=page_transition(page),bgcolor=col))
         elif page.route == "/page_admins":
             page.views.append(ft.View(route="/page_admins",controls=page_admins(page),bgcolor=col))
+        elif page.route == "/page_etu_emploi":
+            page.views.append(ft.View(route="/page_etu_emploi",controls=page_etu_emploi(page),bgcolor=col))
         elif page.route == "/page_liste_de_presence":
             enseignant_connecte = page.session.get('user')
             if enseignant_connecte and enseignant_connecte.get('profession') == 'Enseignant':
