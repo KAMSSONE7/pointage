@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 import mysql.connector
 from mysql.connector import Error
 from datetime import datetime, timedelta

@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 from datetime import datetime
 
 # Définition des couleurs

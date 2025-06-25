@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 from flet import *
 from fonction import *
 from datetime import datetime
@@ -213,7 +212,7 @@ def page_admins(page: Page):
         ),
         padding=padding.only(left=10, top=10)
     )
-    
+
     # Conteneur principal
     main_content = Container(
         bgcolor=background_color,
@@ -239,7 +238,7 @@ def page_admins(page: Page):
                             info_cards,
                             Container(height=20),
                             action_buttons,
-                            Container(height=100)  # Espace pour la navigation
+                            Container(height=100)
                         ]
                     )
                 )
@@ -309,8 +308,6 @@ def page_admins(page: Page):
 
     is_mobile = page.width < 600
     button_rech_width = 300 if not is_mobile else 170
-    button_rech_enter = 50 if not is_mobile else 40
-    image_width = 200 if not is_mobile else 150
 
 
 
@@ -654,7 +651,9 @@ def page_admins(page: Page):
             if name in element_st:
                 index=element_st.index(name)
                 stats = list_stat[index]
-        
+        else:
+            stats = list_statistique[element_stat.index(name)] if name in element_stat else None
+                
         # Carte d'informations utilisateur modernisée
         user_info_card = create_modern_card(
             Column(
@@ -909,7 +908,9 @@ def page_admins(page: Page):
             # Page d'accueil modernisée
             welcome_card = create_modern_card(
                 Column(
+                    Container(height=20),
                     controls=[
+                        
                         Container(
                             content=Icon(Icons.HOME, size=80, color=primary_color),
                             alignment=alignment.center,

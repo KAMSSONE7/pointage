@@ -16,7 +16,7 @@ def page_transition(page: ft.Page):
     img = ft.Row([ft.Image(src="bienvenue.gif")], alignment=ft.MainAxisAlignment.CENTER) 
     
     saut = ft.Row(height=30)
-    
+     
     # Retourner seulement l'image et l'espace (sans bouton)
     champ = [img, saut]
     

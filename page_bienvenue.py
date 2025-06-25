@@ -1,5 +1,4 @@
-import flet as ft
-from db_config import DB_CONFIG 
+import flet as ft 
 
 def page_bienvenue(page:ft.Page):
     # Nettoyer la session et les vues au chargement de la page de connexion
@@ -25,7 +24,7 @@ def page_bienvenue(page:ft.Page):
     description_size = 18 if not is_mobile else 14
     button_width = 200 if not is_mobile else 150
     button_height = 50 if not is_mobile else 40
-    image_width = 200 if not is_mobile else 150
+    image_width = 300 if not is_mobile else 150
             
     img = ft.Row([ft.Image(src="logo_sans_fond.png",width=image_width,color='white')],alignment=ft.MainAxisAlignment.CENTER)
     
@@ -35,7 +34,7 @@ def page_bienvenue(page:ft.Page):
     text = ft.Row([ft.Text("Bienvenue sur", size=text_size, weight="bold", color="white")],
         alignment=ft.MainAxisAlignment.CENTER
     )
-    text2 = ft.Row([ft.Text("MI_P🎯INT", size=text_size, weight="bold", color="white")],
+    text2 = ft.Row([ft.Text("MI_P🎯INTAGE", size=text_size, weight="bold", color="white")],
         alignment=ft.MainAxisAlignment.CENTER
     )
     

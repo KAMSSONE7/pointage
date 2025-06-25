@@ -96,29 +96,29 @@ def stat_etu(page=None):
             
             # Récupérer les présences du mois dernier
             cursor.execute("""
-                SELECT COUNT(*) 
-                FROM detail_presence dp
-                JOIN liste_presence lp ON dp.Id_liste = lp.Id_liste
-                WHERE dp.IP_etudiant = %s 
-                AND lp.Date_liste >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+                    SELECT COUNT(*) 
+                    FROM presence_etu pe
+                    JOIN etudiant e ON pe.IP=e.IP
+                    WHERE pe.IP = %s
+                    AND pe.Date_presence >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
             """, (ip_etudiant,))
             presence_mois = cursor.fetchone()[0]
             
             # Récupérer les présences de la semaine dernière
             cursor.execute("""
-                SELECT COUNT(*) 
-                FROM detail_presence dp
-                JOIN liste_presence lp ON dp.Id_liste = lp.Id_liste
-                WHERE dp.IP_etudiant = %s 
-                AND lp.Date_liste >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+                    SELECT COUNT(*) 
+                    FROM presence_etu pe
+                    JOIN etudiant e ON pe.IP=e.IP
+                    WHERE pe.IP = %s
+                    AND pe.Date_presence >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
             """, (ip_etudiant,))
             presence_semaine = cursor.fetchone()[0]
             
             # Récupérer le total des présences
             cursor.execute("""
                 SELECT COUNT(*) 
-                FROM detail_presence 
-                WHERE IP_etudiant = %s
+                FROM presence_etu 
+                WHERE IP = %s
             """, (ip_etudiant,))
             total_presences = cursor.fetchone()[0]
             
@@ -127,15 +127,13 @@ def stat_etu(page=None):
             
             # Récupérer la présence par jour
             cursor.execute("""
-                SELECT 
-                    DATE(lp.Date_liste) as date, 
-                    COUNT(*) as nb_presences
-                FROM detail_presence dp
-                JOIN liste_presence lp ON dp.Id_liste = lp.Id_liste
-                WHERE dp.IP_etudiant = %s
-                AND lp.Date_liste >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
-                GROUP BY DATE(lp.Date_liste)
-                ORDER BY DATE(lp.Date_liste)
+                    SELECT 
+                        DATE(dp.Date_presence) as date, 
+                        COUNT(*) as nb_presences
+                    FROM presence_etu dp
+                    WHERE dp.IP = %s
+                    AND dp.Date_presence >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                    GROUP BY DATE(dp.Date_presence)
             """, (ip_etudiant,))
             
             presence_par_jour = {row[0].strftime('%Y-%m-%d'): row[1] for row in cursor.fetchall()}
@@ -193,11 +191,11 @@ def stat_etu_admin():
     try:
         # Connexion à la base de données
         connection = mysql.connector.connect(
-            host='yamanote.proxy.rlwy.net',  # adresse de serveur MySQL
-            database='railway',  # base de données utiliser
+            host='localhost',  # adresse de serveur MySQL
+            database='donnee_app',  # base de données utiliser
             user='root',  # nom d'utilisateur MySQL
-            port='13208',
-            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # Remplacez par votre mot de passe MySQL
+            port='3308',
+            password='Kamssone25',  # Remplacez par votre mot de passe MySQL
             charset='utf8'
         )
         

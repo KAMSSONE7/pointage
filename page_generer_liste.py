@@ -1,10 +1,8 @@
 import flet as ft
-from db_config import DB_CONFIG
 from datetime import datetime, timedelta
 import mysql.connector
 from mysql.connector import Error
 from fonction import *
-from db_config import get_db_connection
 
 def page_generer_liste(page: ft.Page, utilisateur_connecte):
 
@@ -89,8 +87,14 @@ def page_generer_liste(page: ft.Page, utilisateur_connecte):
         connection = None
         cursor = None
         try:
-            connection = get_db_connection()
-            if not connection or not connection.is_connected():
+            connection = mysql.connector.connect(
+                host='localhost',
+                database='donnee_app',
+                user='root',
+                password='Kamssone25',
+                port='3308'
+            )
+            if not connection.is_connected():
                 raise Exception("Impossible de se connecter à la base de données")
 
             cursor = connection.cursor()

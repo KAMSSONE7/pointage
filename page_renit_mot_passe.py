@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 import mysql.connector
 from mysql.connector import Error
 import bcrypt
@@ -9,11 +8,11 @@ from db_config import get_db_connection
 
 # Configuration de la base de données
 db_config = {
-    'host': 'yamanote.proxy.rlwy.net',
-    'database': 'railway',
+    'host': 'localhost',
+    'database': 'donnee_app',
     'user': 'root',
-    'password': 'oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
-    'port': 13208,
+    'password': 'Kamssone25',
+    'port': 3308,
     'charset': 'utf8mb4'
 }
 

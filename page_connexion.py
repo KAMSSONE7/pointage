@@ -1,25 +1,37 @@
 import flet as ft
-from db_config import get_db_connection
 import mysql.connector
 from mysql.connector import Error
 import bcrypt
+from fonction import *
 import time
+from db_config import get_db_connection as create_connection
 
+# Définition des couleurs modernes
+BG = "#041955"   # Bleu foncé
+FWG = "#FFFFFF"  # Blanc
+FG = "#3450a1"   # Bleu clair
+PINK = "#eb06ff" # Rose
+ACCENT = "#2BC2A9"  # Vert menthe
+CARD_BG = "#1C3989"  # Bleu card
+SHADOW = "#516ec5"   # Ombre
 # Fonction pour récupérer l'adresse depuis les tables spécialisées
 def get_address_from_specialized_table(profession, user_id):
     try:
-        connection = get_db_connection()
+        connection = create_connection()
         if connection:
             cursor = connection.cursor()
+            
             if profession == 'Etudiant':
                 cursor.execute("SELECT adresse FROM etudiant WHERE Numero_carte_etu = %s", (user_id,))
             elif profession == 'Enseignant':
                 cursor.execute("SELECT adresse FROM enseignant WHERE Id_ens = %s", (user_id,))
             elif profession == 'Administration':
                 cursor.execute("SELECT adresse FROM administration WHERE Id_adm = %s", (user_id,))
+            
             result = cursor.fetchone()
             cursor.close()
             connection.close()
+            
             return result[0] if result and result[0] else "N/A"
     except Error as e:
         print(f"Erreur lors de la récupération de l'adresse: {e}")
@@ -53,17 +65,16 @@ def page_connexion(page: ft.Page):
     def oublier(e):
         page.go('/page_recup_mot_passe')
 
-    # Récupérer les utilisateurs depuis la table utilisateurs
+    # Récupérer les utilisateurs depuis la table `utilisateurs`
     def get_users():
         try:
-            connection = get_db_connection()
+            connection = create_connection()
             if connection:
                 cursor = connection.cursor()
                 cursor.execute("SELECT nom, prenom, numero, email, profession, mot_passe FROM utilisateurs")
                 result = cursor.fetchall()
                 cursor.close()
                 connection.close()
-                print(f"Utilisateurs récupérés : {len(result)}")
                 return result
             return []
         except Error as e:
@@ -78,16 +89,14 @@ def page_connexion(page: ft.Page):
     list_email = [str(user[3]) for user in list_users]
     list_user_id = [user[6] if len(user) > 6 else None for user in list_users]  # ID spécialisé
 
-    # Vérification des identifiants avec débogage
+    # Vérification des identifiants
     def identite(numero, mot_passe):
-        print(f"Vérification identifiants - Numero: {numero}, Mot de passe: {mot_passe}")
         if numero in list_numero:
             index = list_numero.index(numero)
+            # Vérifier le mot de passe haché
             stored_password = list_mot_passe[index].encode('utf-8')
             if bcrypt.checkpw(mot_passe.encode('utf-8'), stored_password):
-                print(f"Authentification réussie pour {list_nomComplet[index]}")
                 return index
-        print("Authentification échouée")
         return None
 
     # Fonction pour afficher les messages avec animation
@@ -100,6 +109,7 @@ def page_connexion(page: ft.Page):
 
     # Gestion de la connexion
     def connexion(e):
+        # Désactiver le bouton pendant le traitement
         btn_connexion.disabled = True
         btn_connexion.text = "Connexion..."
         page.update()
@@ -110,58 +120,77 @@ def page_connexion(page: ft.Page):
         ip = "N/A"
         
         if not num or not mdp:
-            show_message("⚠ Veuillez remplir tous les champs.", "red")
+            show_message("⚠️ Veuillez remplir tous les champs.", "red")
         else:
             index = identite(num, mdp)
             if index is not None:
+                # Récupérer l'adresse et l'IP depuis la table spécialisée
                 user_profession = list_profession[index]
                 user_id = list_user_id[index] if list_user_id[index] else num
                 try:
-                    connection = get_db_connection()
+                    connection = create_connection()
                     if not connection or not connection.is_connected():
                         show_message("❌ Erreur de connexion à la base de données", "red")
                         return
+                        
                     cursor = connection.cursor()
+                    
                     if user_profession == 'Etudiant':
+                        # D'abord, essayer de trouver par Numero_carte_etu
                         cursor.execute("SELECT Adresse, IP, Numero FROM etudiant WHERE Numero_carte_etu = %s OR Numero = %s LIMIT 1", (user_id, user_id))
                         result = cursor.fetchone()
                         if result:
                             adresse = result[0] if result[0] else "N/A"
                             ip = result[1] if result[1] else "N/A"
+                            # Mettre à jour le numéro de carte si nécessaire
                             if not result[2] or result[2] != user_id:
                                 cursor.execute("UPDATE etudiant SET Numero = %s WHERE IP = %s", (user_id, ip))
                                 connection.commit()
                         else:
+                            # Si aucun étudiant n'est trouvé, essayer de trouver par IP
                             cursor.execute("SELECT Adresse, IP, Numero FROM etudiant WHERE IP = %s LIMIT 1", (user_id,))
                             result = cursor.fetchone()
                             if result:
                                 adresse = result[0] if result[0] else "N/A"
                                 ip = result[1] if result[1] else "N/A"
+                                # Mettre à jour le numéro de carte si nécessaire
                                 if not result[2] or result[2] != user_id:
                                     cursor.execute("UPDATE etudiant SET Numero = %s WHERE IP = %s", (user_id, ip))
                                     connection.commit()
+                            else:
+                                adresse = "N/A"
+                                ip = "N/A"
                     elif user_profession == 'Enseignant':
-                        cursor.execute("SELECT adresse FROM enseignant WHERE Id_ens = %s", (user_id,))
+                        cursor.execute("SELECT Id_ens, adresse FROM enseignant WHERE Id_ens = %s", (user_id,))
+                        result = cursor.fetchone()
+                        if result:
+                            user_id = result[0]
+                            adresse = result[1] if result[1] else "N/A"
+                        else:
+                            cursor.execute("SELECT Id_ens, adresse FROM enseignant WHERE Numero = %s", (num,))
+                            result = cursor.fetchone()
+                            if result:
+                                user_id = result[0]
+                                adresse = result[1] if result[1] else "N/A"
+                            else:
+                                adresse = "N/A"
+                    elif user_profession == 'Administration':
+                        cursor.execute("SELECT adresse, Id_adm FROM administration WHERE Id_adm = %s", (user_id,))
                         result = cursor.fetchone()
                         if result:
                             adresse = result[0] if result[0] else "N/A"
                         else:
-                            cursor.execute("SELECT adresse FROM enseignant WHERE Numero = %s", (num,))
-                            result = cursor.fetchone()
-                            if result:
-                                adresse = result[0] if result[0] else "N/A"
-                    elif user_profession == 'Administration':
-                        cursor.execute("SELECT adresse FROM administration WHERE Id_adm = %s", (user_id,))
-                        result = cursor.fetchone()
-                        if result:
-                            adresse = result[0] if result[0] else "N/A"
+                            adresse = "N/A"
+                    
                     cursor.close()
                     connection.close()
+                        
                 except Error as e:
                     print(f"Erreur lors de la récupération des données: {e}")
                     adresse = "N/A"
                     ip = "N/A"
                 
+                # Stocker toutes les informations de l'utilisateur dans la session
                 user_data = {
                     "nom": list_users[index][0],
                     "prenom": list_users[index][1],
@@ -173,7 +202,10 @@ def page_connexion(page: ft.Page):
                     "id": user_id
                 }
                 page.session.set("user", user_data)
+                
                 show_message(f"✅ Connexion réussie ! Bienvenue {list_users[index][0]}", "green", True)
+                
+                # Redirection selon le profil
                 if list_profession[index] == 'Etudiant':
                     page.go('/page_etu_acc')
                 elif list_profession[index] == 'Enseignant':
@@ -183,6 +215,7 @@ def page_connexion(page: ft.Page):
             else:
                 show_message("❌ Numéro ou mot de passe incorrect.", "red")
         
+        # Réactiver le bouton
         btn_connexion.disabled = False
         btn_connexion.text = "SE CONNECTER"
         page.update()
@@ -256,17 +289,22 @@ def page_connexion(page: ft.Page):
         on_click=oublier
     )
     
-    btn_retour = ft.ElevatedButton(
-        "← RETOUR",
-        bgcolor='white',
-        color='black',
-        width=120,
-        height=40,
-        style=ft.ButtonStyle(
-            shape=ft.RoundedRectangleBorder(radius=10),
-            text_style=ft.TextStyle(size=14)
+    btn_retour = ft.Container(
+        content=ft.IconButton(
+            icon=ft.Icons.ARROW_BACK_IOS,
+            icon_color=FWG,
+            icon_size=24,
+            on_click=lambda _: page.go('/page_bienvenue'),
+            style=ft.ButtonStyle(
+                shape=ft.CircleBorder(),
+                bgcolor=CARD_BG,
+                shadow_color=SHADOW,
+                elevation=5
+            ),
+            animate_scale=ft.Animation(200, ft.AnimationCurve.BOUNCE_OUT)
         ),
-        on_click=lambda _: page.go("/page_bienvenue")
+        padding=ft.padding.all(10),
+        animate=ft.Animation(400, ft.AnimationCurve.EASE_OUT)
     )
 
     # Container principal avec design amélioré
@@ -297,15 +335,15 @@ def page_connexion(page: ft.Page):
             ft.Container(
                 content=ft.Column([
                     numero,
-                    ft.Container(height=15),
+                    ft.Container(height=15),  # Espacement
                     mot_de_passe,
-                    ft.Container(height=25),
+                    ft.Container(height=25),  # Espacement
                     btn_connexion,
-                    ft.Container(height=15),
+                    ft.Container(height=15),  # Espacement
                     btn_inscrire,
-                    ft.Container(height=10),
+                    ft.Container(height=10),  # Espacement
                     btn_oublier,
-                    ft.Container(height=20),
+                    ft.Container(height=20),  # Espacement
                     message,
                 ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
                 bgcolor='rgba(255, 255, 255, 0.1)',
@@ -320,9 +358,9 @@ def page_connexion(page: ft.Page):
 
     # Ajouter le conteneur de connexion au conteneur principal
     main_container.content.controls = [
-        ft.Container(height=20),
+        ft.Container(height=20),  # Espacement en haut
         login_container,
-        ft.Container(height=20)
+        ft.Container(height=20)   # Espacement en bas
     ]
     
     # Layout final avec bouton retour en haut à gauche

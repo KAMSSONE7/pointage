@@ -165,7 +165,7 @@ def page_etu_stats(page: Page, user_data: dict = None):
             [
                 create_stats_card("Présence ce mois", presence_mois, "today", SUCCESS_COLOR),
                 create_stats_card("Présence cette semaine", presence_semaine, "weekend", PRIMARY_COLOR),
-                create_stats_card("Taux de présence", f"{taux_presence:.1f}%", "percent", WARNING_COLOR),
+                create_stats_card("Taux de présence", f"{taux_presence:.1f}", "percent", WARNING_COLOR),
             ],
             spacing=15,
             scroll=ScrollMode.AUTO,

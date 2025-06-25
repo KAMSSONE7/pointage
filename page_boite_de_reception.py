@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 from flet import *
 import mysql.connector
 from mysql.connector import Error
@@ -327,12 +326,7 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
                             VALUES (%s, %s, %s, %s)
                             """,
                             (ip_etu, date_presence.date(), heure_debut, heure_fin)
-                        )
-                
-                cursor.execute("DELETE FROM presence_etu WHERE DATE(Date_presence) = CURDATE()")
-                
-                connection.commit()
-                
+                        )       
                 charger_donnees()
                 construire_interface()
                 
@@ -359,34 +353,7 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
                 cursor.close()
                 connection.close()
 
-    def supprimer_presence(e: ft.ControlEvent, ip_etudiant):
-        nom_etudiant = get_info_etudiant(ip_etudiant)
-        
-        def confirmer_suppression(e):
-            dlg_modal.open = False
-            page.update()
-            effectuer_suppression(ip_etudiant, nom_etudiant)
-            
-        def annuler_suppression(e):
-            dlg_modal.open = False
-            page.update()
-            
-        dlg_modal = ft.AlertDialog(
-            modal=True,
-            title=ft.Text("Confirmation de suppression"),
-            content=ft.Text(f"Êtes-vous sûr de vouloir retirer '{nom_etudiant}' de la liste de présence ?"),
-            actions=[
-                ft.TextButton("Annuler", on_click=annuler_suppression),
-                ft.TextButton("Supprimer", on_click=confirmer_suppression),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
-        )
-        
-        page.dialog = dlg_modal
-        dlg_modal.open = True
-        page.update()
-
-    def effectuer_suppression(ip_etudiant, nom_etudiant):
+    def effectuer_suppression(ip_etudiant, nom_etudiant, date_presence=None):
         connection = None
         cursor = None
         try:
@@ -394,16 +361,26 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
             
             if connection.is_connected():
                 cursor = connection.cursor()
-                cursor.execute(
-                    "DELETE FROM presence_etu WHERE IP = %s AND DATE(Date_presence) = CURDATE()",
-                    (ip_etudiant,)
-                )
+                if date_presence:
+                    cursor.execute(
+                        "DELETE FROM presence_etu WHERE IP = %s AND Date_presence = %s",
+                        (ip_etudiant, date_presence)
+                    )
+                else:
+                    cursor.execute(
+                        "DELETE FROM presence_etu WHERE IP = %s",
+                        (ip_etudiant,)
+                    )
                 connection.commit()
                 
                 charger_donnees()
                 construire_interface()
                 
-                success_message.value = f"'{nom_etudiant}' a été retiré de la liste de présence"
+                message = f"'{nom_etudiant}' a été retiré de la liste de présence"
+                if date_presence:
+                    message += f" pour le {date_presence.strftime('%d/%m/%Y')}"
+                
+                success_message.value = message
                 success_message.color = "ORANGE"
                 page.update()
                 
@@ -426,49 +403,29 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
                 cursor.close()
                 connection.close()
 
-    def modifier_heure_presence(e: ft.ControlEvent, ip_etudiant):
+    def supprimer_presence(e: ft.ControlEvent, ip_etudiant, date_presence=None):
         nom_etudiant = get_info_etudiant(ip_etudiant)
         
-        heure_actuelle = None
-        for presence in liste_presences_actuelles:
-            if presence[0] == ip_etudiant:
-                heure_actuelle = presence[2]
-                break
-        
-        heure_field = ft.TextField(
-            label="Nouvelle heure (HH:MM:SS)",
-            value=timedelta_to_str(heure_actuelle) if heure_actuelle else "",
-            width=200
-        )
-        
-        def confirmer_modification(e):
+        def confirmer_suppression(e):
+            dlg_modal.open = False
+            page.update()
+            effectuer_suppression(ip_etudiant, nom_etudiant, date_presence)
+            
+        def annuler_suppression(e):
             dlg_modal.open = False
             page.update()
             
-            try:
-                nouvelle_heure_str = heure_field.value
-                datetime.strptime(nouvelle_heure_str, "%H:%M:%S")
-                effectuer_modification_heure(ip_etudiant, nouvelle_heure_str, nom_etudiant)
-                
-            except ValueError:
-                success_message.value = "Format d'heure invalide ! Utilisez HH:MM:SS"
-                success_message.color = "RED"
-                page.update()
-        
-        def annuler_modification(e):
-            dlg_modal.open = False
-            page.update()
-        
+        message = f"Êtes-vous sûr de vouloir retirer '{nom_etudiant}' de la liste de présence ?"
+        if date_presence:
+            message += f" pour le {date_presence.strftime('%d/%m/%Y')}"
+            
         dlg_modal = ft.AlertDialog(
             modal=True,
-            title=ft.Text(f"Modifier l'heure d'arrivée de {nom_etudiant}"),
-            content=ft.Column([
-                ft.Text("Entrez la nouvelle heure d'arrivée :"),
-                heure_field,
-            ], height=100),
+            title=ft.Text("Confirmation de suppression"),
+            content=ft.Text(message),
             actions=[
-                ft.TextButton("Annuler", on_click=annuler_modification),
-                ft.TextButton("Modifier", on_click=confirmer_modification),
+                ft.TextButton("Annuler", on_click=annuler_suppression),
+                ft.TextButton("Supprimer", on_click=confirmer_suppression),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
@@ -476,50 +433,6 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
         page.dialog = dlg_modal
         dlg_modal.open = True
         page.update()
-
-    def effectuer_modification_heure(ip_etudiant, nouvelle_heure_str, nom_etudiant):
-        connection = None
-        cursor = None
-        try:
-            connection = get_db_connection()
-            
-            if connection.is_connected():
-                cursor = connection.cursor()
-                cursor.execute(
-                    """
-                    UPDATE presence_etu 
-                    SET Heure_debut = %s 
-                    WHERE IP = %s AND DATE(Date_presence) = CURDATE()
-                    """,
-                    (nouvelle_heure_str, ip_etudiant)
-                )
-                connection.commit()
-                
-                charger_donnees()
-                construire_interface()
-                
-                success_message.value = f"Heure d'arrivée de '{nom_etudiant}' modifiée à {nouvelle_heure_str}"
-                success_message.color = "BLUE"
-                page.update()
-                
-                def clear_message():
-                    time.sleep(3)
-                    success_message.value = ""
-                    page.update()
-                
-                import threading
-                threading.Thread(target=clear_message, daemon=True).start()
-
-        except Error as e:
-            print(f"Erreur lors de la modification: {e}")
-            success_message.value = f"Erreur lors de la modification : {str(e)}"
-            success_message.color = "RED"
-            page.update()
-
-        finally:
-            if cursor and connection and connection.is_connected():
-                cursor.close()
-                connection.close()
 
     def marquer_notification_lue(e: ft.ControlEvent, id_notification):
         connection = None
@@ -612,13 +525,9 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
                             ft.Text("ACTIONS DISPONIBLES", weight=ft.FontWeight.BOLD),
                             ft.Row([
                                 ft.ElevatedButton(
-                                    "✏️ Modifier l'heure",
-                                    on_click=partial(modifier_heure_presence, ip_etudiant=ip_etu),
-                                    color="BLUE"
-                                ),
-                                ft.ElevatedButton(
                                     "🗑️ Supprimer",
-                                    on_click=partial(supprimer_presence, ip_etudiant=ip_etu),
+                                    # CORRECTION ICI :
+                                    on_click=lambda e, ip=ip_etu, date=date_presence: supprimer_presence(e, ip, date),
                                     color="RED"
                                 ),
                             ], alignment=ft.MainAxisAlignment.SPACE_AROUND),
@@ -628,34 +537,34 @@ def page_boite_de_reception(page: ft.Page, enseignant_connecte=None):
                 )
                 panel_presence.controls.append(exp)
 
-        panel_listes.controls.clear()
-        panel_listes.expand_icon_color = ft.Colors.ORANGE_500
-        panel_listes.elevation = 8
-        panel_listes.divider_color = ft.Colors.ORANGE
+            panel_listes.controls.clear()
+            panel_listes.expand_icon_color = ft.Colors.ORANGE_500
+            panel_listes.elevation = 8
+            panel_listes.divider_color = ft.Colors.ORANGE
 
-        if enseignant_id and liste_presence_historique:
-            for id_liste, date_liste, heure_creation, nb_etudiants in liste_presence_historique:
-                exp = ft.ExpansionPanel(
-                    bgcolor=ft.Colors.WHITE,
-                    header=ft.ListTile(
-                        title=ft.Text(f"Liste du {date_liste.strftime('%d/%m/%Y')}", weight=ft.FontWeight.BOLD),
-                        subtitle=ft.Text(f"Créée à {timedelta_to_str(heure_creation)} - {nb_etudiants} étudiants")
-                    ),
-                    content=ft.ListTile(
-                        title=ft.Text("Voir les détails"),
-                        trailing=ft.IconButton(
-                            ft.Icons.VISIBILITY,
-                            on_click=partial(afficher_details_liste, id_liste=id_liste)
+            if enseignant_id and liste_presence_historique:
+                for id_liste, date_liste, heure_creation, nb_etudiants in liste_presence_historique:
+                    exp = ft.ExpansionPanel(
+                        bgcolor=ft.Colors.WHITE,
+                        header=ft.ListTile(
+                            title=ft.Text(f"Liste du {date_liste.strftime('%d/%m/%Y')}", weight=ft.FontWeight.BOLD),
+                            subtitle=ft.Text(f"Créée à {timedelta_to_str(heure_creation)} - {nb_etudiants} étudiants")
                         ),
-                    ),
+                        content=ft.ListTile(
+                            title=ft.Text("Voir les détails"),
+                            trailing=ft.IconButton(
+                                ft.Icons.VISIBILITY,
+                                on_click=partial(afficher_details_liste, id_liste=id_liste)
+                            ),
+                        ),
+                    )
+                    panel_listes.controls.append(exp)
+            elif enseignant_id:
+                exp = ft.ExpansionPanel(
+                    header=ft.ListTile(title=ft.Text("AUCUNE LISTE ENREGISTRÉE")),
+                    content=ft.ListTile(title=ft.Text("Aucune liste de présence enregistrée", size=20)),
                 )
                 panel_listes.controls.append(exp)
-        elif enseignant_id:
-            exp = ft.ExpansionPanel(
-                header=ft.ListTile(title=ft.Text("AUCUNE LISTE ENREGISTRÉE")),
-                content=ft.ListTile(title=ft.Text("Aucune liste de présence enregistrée", size=20)),
-            )
-            panel_listes.controls.append(exp)
 
         main_content.controls.clear()
         main_content.controls.extend([

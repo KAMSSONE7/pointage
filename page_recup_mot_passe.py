@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -12,11 +11,11 @@ from db_config import get_db_connection
 
 # Configuration de la base de données
 db_config = {
-    'host': 'yamanote.proxy.rlwy.net',
-    'database': 'railway',
+    'host': 'localhost',
+    'database': 'donnee_app',
     'user': 'root',
-    'password': 'oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',
-    'port': 13208,
+    'password': 'Kamssone25',
+    'port': 3308,
     'charset': 'utf8mb4'
 }
 
@@ -188,6 +187,10 @@ def page_recup_mot_passe(page: ft.Page):
         "content_padding": ft.padding.symmetric(horizontal=15, vertical=12)
     }
 
+    is_mobile = page.width < 600
+    button_width = 160 if not is_mobile else 90
+    button_height = 45 if not is_mobile else 45
+    container_width = 450 if not is_mobile else 320
     # Création des champs avec style amélioré
     email = ft.TextField(
         label="Adresse email",
@@ -201,8 +204,8 @@ def page_recup_mot_passe(page: ft.Page):
         "ENVOYER",
         bgcolor='#90EE90',
         color='black',
-        width=160,
-        height=45,
+        width=button_width,
+        height=button_height,
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=12),
             text_style=ft.TextStyle(size=14, weight=ft.FontWeight.BOLD)
@@ -211,14 +214,14 @@ def page_recup_mot_passe(page: ft.Page):
     )
 
     retour = ft.ElevatedButton(
-        "← RETOUR",
+        "←RETOUR",
         bgcolor='lightblue',
         color='black',
-        width=160,
-        height=45,
+        width=button_width,
+        height=button_height,
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=12),
-            text_style=ft.TextStyle(size=14, weight=ft.FontWeight.W_500)
+            text_style=ft.TextStyle(size=14, weight=ft.FontWeight.BOLD)
         ),
         on_click=RETOUR
     )
@@ -281,7 +284,7 @@ def page_recup_mot_passe(page: ft.Page):
                 border=ft.border.all(1, 'rgba(255, 255, 255, 0.2)')
             )
         ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-        width=450,
+        width=container_width,
         padding=20,
     )
 

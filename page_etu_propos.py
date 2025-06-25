@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 
 BG = "#041955"  # Bleu foncé
 FWG = "#FFFFFF"  # Blanc
@@ -103,9 +102,9 @@ def page_etu_propos(page: ft.Page, etudiant_connecte=None):
     team_content = ft.ResponsiveRow(
         controls=[
             create_team_member("DAO KARIM", "Développeur principal", ft.Icons.CODE),
-            create_team_member("Gneto Grace", "Designer UX/UI", ft.Icons.DESIGN_SERVICES),
-            create_team_member("Hamed Meloua", "Chef de Projet", ft.Icons.PERSON),
-            create_team_member("Kadjo Bienvenue", "Analyste", ft.Icons.ANALYTICS),
+            create_team_member("Gneto Schiphra Grace", "Designer UX/UI", ft.Icons.DESIGN_SERVICES),
+            create_team_member("Diomande Hamed Meloua", "Chef de Projet", ft.Icons.PERSON),
+            create_team_member("Kadjo Allouan Moise Bienvenue", "Analyste", ft.Icons.ANALYTICS),
         ],
         spacing=20,
         run_spacing=20,

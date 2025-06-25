@@ -5,11 +5,11 @@ from mysql.connector import Error
 try:
     # Connexion à la base de données
     connection = mysql.connector.connect(
-        host='yamanote.proxy.rlwy.net',  # adresse de serveur MySQL
-        database='railway',  # base de données à utiliser
+        host='localhost',  # adresse de serveur MySQL
+        database='donnee_app',  # base de données à utiliser
         user='root',  # nom d'utilisateur MySQL
-        password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # mot de passe MySQL
-        port=13208,
+        password='Kamssone25',  # mot de passe MySQL
+        port=3308,
         charset='utf8mb4'
     )
     

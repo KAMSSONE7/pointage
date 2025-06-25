@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 import mysql.connector
 from mysql.connector import Error
 from db_config import get_db_connection
@@ -101,7 +100,7 @@ def page_stat2(page: ft.Page, teacher_id=None):
         ft.IconButton(
             icon=ft.Icons.ARROW_BACK,
             icon_color=FWG,
-            on_click=lambda _: page.go("/page_accueil"),
+            on_click=lambda _: page.go("/page_statistiques"),
             tooltip="Retour"
         ),
         ft.Container(expand=True),

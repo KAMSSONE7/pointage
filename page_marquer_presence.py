@@ -1,5 +1,4 @@
 import flet as ft
-from db_config import DB_CONFIG
 import mysql.connector
 from mysql.connector import Error
 from datetime import datetime, timedelta
@@ -21,11 +20,11 @@ def get_db_connection():
     """Établit une connexion à la base de données MySQL"""
     try:
         connection = mysql.connector.connect(
-            host='yamanote.proxy.rlwy.net',
-            database='railway',
+            host='localhost',
+            database='donnee_app',
             user='root',
-            password='oAEycvrWsPdjBfkQnEhqbSLoggHAadRt',  # Mot de passe vide
-            port=13208,
+            password='Kamssone25',  # Mot de passe vide
+            port=3308,
             connection_timeout=5
         )
         if connection.is_connected():

@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 def inserer_presence_enseignant():
     try:
         connection = mysql.connector.connect(
-            host='yamanote.proxy.rlwy.net',
-            database='railway',
+            host='localhost',
+            database='donnee_app',
             user='root',
             password=' ',
-            port='13208'
+            port='3308'
         )
         
         if not connection.is_connected():

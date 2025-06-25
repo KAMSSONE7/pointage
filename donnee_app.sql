@@ -4,9 +4,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 SET @old_autocommit=@@autocommit;
 
-DROP SCHEMA IF EXISTS railway;
-CREATE SCHEMA railway;
-USE railway;
+DROP SCHEMA IF EXISTS donnee_app;
+CREATE SCHEMA donnee_app;
+USE donnee_app;
 
 -- structure de la table Salle
 CREATE TABLE Salle (
@@ -127,7 +127,7 @@ COMMIT;
 -- insertion des groupes de TD
 SET AUTOCOMMIT=0;
 INSERT INTO Groupe_td (Libelle) VALUES
-('G1'),('G2'),('G3'),('G4'),('G5'), ('SI'),('Mecanique');
+('G1'),('G2'),('G3'),('G4'),('SI'),('Mecanique');
 COMMIT;
 
 -- insertion des cours
